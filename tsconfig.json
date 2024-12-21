@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "lib": ["ES2020", "DOM"],
+    "jsx": "react",
+    "module": "esnext",
+    "moduleResolution": "Node",
+    "target": "es5",
+    "strict": true, // type 정보 확인하는 설정
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {  //절대경로처럼 import cpp에서 ldpath 비슷
+      "@hooks/*": ["hooks/*"],
+      "@components/*": ["components/*"],
+      "@layouts/*": ["layouts/*"],
+      "@pages/*": ["pages/*"],
+      "@utils/*": ["utils/*"],
+      "@typings/*": ["typings/*"]
+    }
+  },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "commonjs",
+      "moduleResolution": "Node",
+      "target": "es5",
+      "esModuleInterop": true
+    }
+  }
+}
