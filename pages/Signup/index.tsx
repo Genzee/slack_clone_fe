@@ -1,3 +1,5 @@
+//@pages/Signup/index.tsx
+
 import useInput from '@hooks/useInput';
 import fetcher from '@utils/fetcher';
 import React, { useCallback, useState, use/*swr 대체*//*VFC 18부터 vfc 제거*/  } from 'react';
@@ -7,7 +9,7 @@ import { Success, Form, Error, Label, Input, LinkContainer, Button, Header } fro
 import { Link, Navigate } from 'react-router-dom';
 
 const SignUp = () => {
-  const { data, error, revalidate } = useSWR('/api/users', fetcher);
+  //const { data, error, revalidate } = useSWR('/api/users', fetcher);
 
   const [email, onChangeEmail] = useInput('');
   const [nickname, onChangeNickname] = useInput('');
@@ -17,8 +19,9 @@ const SignUp = () => {
   const [signUpError, setSignUpError] = useState('');
   const [signUpSuccess, setSignUpSuccess] = useState(false);
 
-  const onChangePassword = useCallback(
-    (e) => {
+  //useCallback으로 감싸야 재호출이 안됨 Signup이 매번 불릴때마다 계속 됨
+  //왜 useCallback?
+  const onChangePassword = useCallback((e: any) => {
       setPassword(e.target.value);
       setMismatchError(e.target.value !== passwordCheck);
     },
@@ -26,7 +29,7 @@ const SignUp = () => {
   );
 
   const onChangePasswordCheck = useCallback(
-    (e) => {
+    (e: any) => {
       setPasswordCheck(e.target.value);
       setMismatchError(e.target.value !== password);
     },
@@ -34,7 +37,7 @@ const SignUp = () => {
   );
 
   const onSubmit = useCallback(
-    (e) => {
+    (e: any) => {
       e.preventDefault();
       if (!mismatchError && nickname) {
         console.log('서버로 회원가입하기');
@@ -44,7 +47,7 @@ const SignUp = () => {
           .post('/api/users', {
             email,
             nickname,
-            password,
+            password,//https 를 적용하면 바로 안보임!
           })
           .then((response) => {
             console.log(response);
@@ -59,18 +62,18 @@ const SignUp = () => {
     },
     [email, nickname, password, passwordCheck, mismatchError],
   );
-
+/*
   if (data === undefined) {
     return <div>로딩중...</div>;
   }
 
   if (data) {
-    return <Redirect to="/workspace/sleact/channel/일반" />;
+    return <Navigate to="/workspace/sleact/channel/일반" />;
   }
-
+*/
   return (
     <div id="container">
-      <Header>Sleact</Header>
+      <Header>짭슬랙</Header>
       <Form onSubmit={onSubmit}>
         <Label id="email-label">
           <span>이메일 주소</span>

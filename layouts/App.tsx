@@ -12,9 +12,12 @@ const Login = loadable(() => import('@page/Login));
 //Suspense를 이용하여 지연중일때 표시할 UI를 포함 할 수 있다.
 //React.lazy를 이용해 적용
 import { Suspense } from 'react';
+//import Workspace from './Workspace';
 
 const Login = React.lazy(() => import('@pages/Login'));
 const Signup = React.lazy(() => import('@pages/Signup'));
+const Workspace = React.lazy(() => import('@layouts/Workspace'));
+
 
 const App = () => {
     return (<Suspense fallback={<div>Loading...</div>}>
@@ -22,6 +25,7 @@ const App = () => {
                 <Route path="/" element={<Navigate replace to="/login" />} />
                 <Route path="/login" element = {<Login />}/>
                 <Route path="/signup" element = {<Signup />}/>
+                <Route path="/workspace" element = {<Workspace />}/>
               </Routes>
             </Suspense>);
 }

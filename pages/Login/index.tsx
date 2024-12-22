@@ -1,12 +1,82 @@
 //@pages/Login/index.tsx
+import useInput from '@hooks/useInput';
+import { Success, Form, Error, Label, Input, LinkContainer, Button, Header } from '@pages/Signup/styles';
+import fetcher from '@utils/fetcher';
+import axios from 'axios';
+import React, { useCallback, useState } from 'react';
+import { Link, Navigate } from 'react-router-dom';
+//swr의 경우 react19와 아직 충돌 강제설치함
+//react-query 와 차이?
+import useSWR from 'swr';
 
-import React from 'react';
+const LogIn = () => {
+  const { data: userData, error, mutate } = useSWR('/api/users', fetcher);
+  const [logInError, setLogInError] = useState(false);
+  const [email, onChangeEmail] = useInput('');
+  const [password, onChangePassword] = useInput('');
+  const onSubmit = useCallback(
+    (e:any) => {
+      e.preventDefault();
+      setLogInError(false);
+      axios
+        .post(
+          '/api/users/login',
+          { email, password },
+          {
+            withCredentials: true,
+          },
+        )
+        .then((response) => {
+          mutate();
+        })
+        .catch((error) => {
+          setLogInError(error.response?.status === 401);
+        });
+    },
+    [email, password, mutate],
+  );
+/*
+  if (data === undefined) {
+    return <div>로딩중...</div>;
+  }
 
-const Login = () => {
-    return (
-        <div>Login</div>
-    );
+  if (data) {
+    return <Navigate to="/workspace/sleact/channel/일반" />;
+  }
+*/
+   console.log(error, userData);
+  
+   if (!error && userData) {
+     console.log('로그인됨', userData);
+     return <Navigate to="/workspace" />;
+   }
+  
 
-}
+  return (
+    <div id="container">
+      <Header>짭슬랙</Header>
+      <Form onSubmit={onSubmit}>
+        <Label id="email-label">
+          <span>이메일 주소</span>
+          <div>
+            <Input type="email" id="email" name="email" value={email} onChange={onChangeEmail} />
+          </div>
+        </Label>
+        <Label id="password-label">
+          <span>비밀번호</span>
+          <div>
+            <Input type="password" id="password" name="password" value={password} onChange={onChangePassword} />
+          </div>
+          {logInError && <Error>이메일과 비밀번호 조합이 일치하지 않습니다.</Error>}
+        </Label>
+        <Button type="submit">로그인</Button>
+      </Form>
+      <LinkContainer>
+        아직 회원이 아니신가요?&nbsp;
+        <Link to="/signup">회원가입 하러가기</Link>
+      </LinkContainer>
+    </div>
+  );
+};
 
-export default Login;
+export default LogIn;
